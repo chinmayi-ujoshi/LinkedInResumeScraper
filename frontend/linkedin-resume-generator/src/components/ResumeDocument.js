@@ -14,7 +14,7 @@ const ResumeDocument = ({ profile }) => {
         </View>
 
         {/* Main Content */}
-        <View style={{ paddingTop: 60 }}> 
+        <View style={{ paddingTop: 30 }} > 
           {/* Header Content */}
           <View style={styles.headerContent}>
             <View>
@@ -31,16 +31,18 @@ const ResumeDocument = ({ profile }) => {
           </View>
 
           {/* Summary */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Summary</Text>
-            <Text>{profile.summary || ''}</Text> 
-          </View>
+          {profile.summary && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Summary</Text>
+              <Text>{profile.summary}</Text> 
+            </View>
+          )}
 
           {/* Work Experience */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Work Experience</Text>
             {profile.experiences?.map((job, index) => (
-              <View key={index} style={{ marginBottom: 20 }}>
+              <View key={index} >
                 <Text style={styles.jobTitle}>{job.title || ''}</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                   <Text style={styles.companyName}>{job.company || ''}</Text>

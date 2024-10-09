@@ -2,7 +2,7 @@ import { StyleSheet } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
   page: {
-    paddingTop: 20, 
+    paddingTop: 40, 
     paddingBottom: 40,
     paddingHorizontal: 40,
     fontFamily: 'Times-Roman',
@@ -10,10 +10,10 @@ const styles = StyleSheet.create({
     lineHeight: 1,
   },
   header: {
-    position: 'absolute',
+    position: 'absolute', 
     top: 10,
     right: 40,
-    fontSize: 10,
+    fontSize: 8,
     color: '#888',
     textAlign: 'right',
   },
@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center', 
-    marginBottom: 10,
   },
   resumeTitle: {
     fontSize: 12,
@@ -39,14 +38,12 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   profilePicture: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    objectFit: 'cover',
+    width: 80,
+    height: 80,
   },
   section: {
-    marginTop: 10, 
-    marginBottom: 10,
+    marginTop: 5, 
+    marginBottom: 5,
   },
   sectionTitle: {
     fontSize: 12,

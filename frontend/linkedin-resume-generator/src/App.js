@@ -24,7 +24,7 @@ const App = () => {
       const response = await axios.get('http://localhost:5000/api/linkedin', { params: { url } });
       setProfileData(response.data);
     } catch (err) {
-      setError('Error fetching LinkedIn profile. Please check the URL.');
+      setError('Error fetching LinkedIn profile.');
       console.error(err);
     } finally {
       setLoading(false);
