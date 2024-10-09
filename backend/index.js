@@ -1,82 +1,107 @@
+// const express = require('express');
+// const axios = require('axios');
+// const cors = require('cors');
+// require('dotenv').config();
+
+// const app = express();
+// const port = 5000;  // Backend server running on port 5000
+
+// app.use(cors());
+// app.use(express.json());
+
+//Proxycurl API call
+//this is original
+// app.get('/api/linkedin', async (req, res) => {
+//     const { url } = req.query;  // Get LinkedIn URL from frontend
+
+//     if (!url) {
+//         return res.status(400).json({ error: 'LinkedIn profile URL is required' });
+//     }
+
+//     const apiKey = process.env.PROXYCURL_API_KEY;  // Get API key from .env file
+//     const apiEndpoint = 'https://nubela.co/proxycurl/api/v2/linkedin';
+
+//     try {
+//         const response = await axios.get(apiEndpoint, {
+//             params: { linkedin_profile_url: url },
+//             headers: { Authorization: `Bearer ${apiKey}` },
+//         });
+
+//         res.json(response.data);  // Send the LinkedIn profile data to the frontend
+//     } catch (error) {
+//         console.error('Error fetching LinkedIn profile:', error.message);
+//         res.status(500).json({ error: 'Failed to fetch LinkedIn profile data' });
+//     }
+// });
+
+
+// app.listen(port, () => {
+//     console.log(`Server running on port ${port}`);
+// });
+
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-const port = 5000;  // Backend server running on port 5000
+const port = 5000;
 
 app.use(cors());
 app.use(express.json());
 
-//Proxycurl API call
+/**
+ * Fetch image from a URL and convert it to base64 format.
+ * @param {string} url - The URL of the image.
+ * @returns {string} - The base64 encoded image.
+ */
+const fetchBase64Image = async (url) => {
+  try {
+    const response = await axios.get(url, {
+      responseType: 'arraybuffer', // Fetch the image as binary data
+    });
+    const buffer = Buffer.from(response.data, 'binary').toString('base64');
+    return `data:${response.headers['content-type']};base64,${buffer}`;
+  } catch (error) {
+    console.error(`Failed to fetch or convert image: ${error.message}`);
+    throw new Error('Image fetch or conversion failed');
+  }
+};
+
+// Proxycurl API handler
 app.get('/api/linkedin', async (req, res) => {
-    const { url } = req.query;  // Get LinkedIn URL from frontend
+  const { url } = req.query;
 
-    if (!url) {
-        return res.status(400).json({ error: 'LinkedIn profile URL is required' });
+  if (!url) {
+    return res.status(400).json({ error: 'LinkedIn profile URL is required' });
+  }
+
+  try {
+    const profileResponse = await axios.get('https://nubela.co/proxycurl/api/v2/linkedin', {
+      params: { linkedin_profile_url: url },
+      headers: { Authorization: `Bearer ${process.env.PROXYCURL_API_KEY}` },
+    });
+
+    const profileData = profileResponse.data;
+
+    // Convert the profile picture to Base64 if it exists
+    if (profileData.profile_pic_url) {
+      try {
+        profileData.profile_pic_base64 = await fetchBase64Image(profileData.profile_pic_url);
+      } catch (err) {
+        console.error('Failed to convert profile picture to base64:', err.message);
+        // Optionally, provide a default base64 placeholder or null
+        profileData.profile_pic_base64 = null;
+      }
     }
 
-    const apiKey = process.env.PROXYCURL_API_KEY;  // Get API key from .env file
-    const apiEndpoint = 'https://nubela.co/proxycurl/api/v2/linkedin';
-
-    try {
-        const response = await axios.get(apiEndpoint, {
-            params: { linkedin_profile_url: url },
-            headers: { Authorization: `Bearer ${apiKey}` },
-        });
-
-        res.json(response.data);  // Send the LinkedIn profile data to the frontend
-    } catch (error) {
-        console.error('Error fetching LinkedIn profile:', error.message);
-        res.status(500).json({ error: 'Failed to fetch LinkedIn profile data' });
-    }
+    res.json(profileData); // Send the modified profile data back to the frontend
+  } catch (error) {
+    console.error('Failed to fetch LinkedIn profile data:', error.message);
+    res.status(500).json({ error: 'Failed to fetch LinkedIn profile data' });
+  }
 });
 
-// app.get('/api/linkedin', async (req, res) => {
-//   const { url } = req.query;
-
-//   if (!url) {
-//     return res.status(400).json({ error: 'LinkedIn profile URL is required' });
-//   }
-
-//   // Mock response
-//   const mockResponse = {
-//     full_name: "John Doe",
-//     email: "john.doe@example.com",
-//     profile_picture_url: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.istockphoto.com%2Fphotos%2Fman&psig=AOvVaw2ERT-2P_DXGlEIIEgUL-LW&ust=1728348323693000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCMC88cyF-4gDFQAAAAAdAAAAABAE",  // Placeholder image
-//     experiences: [
-//       {
-//         title: "Software Engineer",
-//         company: "Tech Company",
-//         start_date: "January 2020",
-//         end_date: "Present",
-//         description: "Working on full-stack development."
-//       },
-//       {
-//         title: "Junior Developer",
-//         company: "Another Company",
-//         start_date: "June 2018",
-//         end_date: "December 2019",
-//         description: "Worked on front-end development."
-//       }
-//     ],
-//     education: [
-//       {
-//         school: "University of Technology",
-//         degree: "Bachelor of Science",
-//         field_of_study: "Computer Science",
-//         start_date: "2014",
-//         end_date: "2018"
-//       }
-//     ]
-//   };
-
-//   // Send mock response to frontend
-//   res.json(mockResponse);
-// });
-
-
 app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+  console.log(`Server running on port ${port}`);
 });

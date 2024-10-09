@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { PDFDownloadLink, Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
+import { PDFDownloadLink, Page, Text, View, Document, Image } from '@react-pdf/renderer';
+import styles from './styles';
 
 const App = () => {
   const [url, setUrl] = useState('');
@@ -22,115 +23,56 @@ const App = () => {
     }
   };
 
-  const styles = StyleSheet.create({
-    page: {
-      padding: 30,
-      fontFamily: 'Helvetica', // Use a clean, professional font
-    },
-    header: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: 20,
-    },
-    name: {
-      fontSize: 24,
-      fontWeight: 'bold',
-    },
-    contactDetails: {
-      fontSize: 12,
-      color: '#555',
-      marginBottom: 5,
-    },
-    profilePicture: {
-      width: 100,
-      height: 100,
-      borderRadius: '50%',
-      objectFit: 'cover',
-    },
-    section: {
-      marginBottom: 20,
-    },
-    sectionTitle: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      color: '#007bff',
-      marginBottom: 10,
-      borderBottom: '1px solid #ddd',  // Add underline to section titles
-      paddingBottom: 5,
-    },
-    jobTitle: {
-      fontSize: 14,
-      fontWeight: 'bold',
-      marginVertical: 5,
-    },
-    companyName: {
-      fontSize: 12,
-      fontStyle: 'italic',
-      color: '#333',
-    },
-    dateRange: {
-      fontSize: 12,
-      textAlign: 'right',
-      color: '#777',
-    },
-    bulletPoints: {
-      marginLeft: 15,
-      marginBottom: 10,
-      fontSize: 12,
-      color: '#555',
-    },
-    footer: {
-      position: 'absolute',
-      bottom: 30,
-      left: 0,
-      right: 0,
-      textAlign: 'center',
-      fontSize: 10,
-      color: '#adb5bd',
-    },
-  });
-  
   const ResumeDocument = ({ profile }) => (
     <Document>
       <Page style={styles.page}>
-        {/* Header Section with Profile Picture */}
+        {/*Header*/}
         <View style={styles.header}>
           <View>
             <Text style={styles.name}>{profile.full_name}</Text>
-            <Text style={styles.contactDetails}>Email: {profile.email || 'Not available'}</Text>
+            <Text style={styles.contactDetails}>Occupation: {profile.occupation}</Text>
+            <Text style={styles.contactDetails}>Location: {profile.city}, {profile.state}, {profile.country_full_name}</Text>
           </View>
-          {profile.profile_picture_url && (
-            <Image
-              style={styles.profilePicture}
-              src={profile.profile_picture_url || 'https://via.placeholder.com/100'}
-            />
-          )}
+          <Image
+            style={styles.profilePicture}
+            src={profile.profile_pic_base64}
+          />
         </View>
   
-        {/* Work Experience Section */}
+        {/*Summary*/}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Summary</Text>
+          <Text style={styles.bulletPoints}>{profile.summary}</Text>
+        </View>
+  
+        {/* Work */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Work Experience</Text>
           {profile.experiences?.map((job, index) => (
-            <View key={index} style={{ marginBottom: 10 }}>
+            <View key={index} style={{ marginBottom: 20 }}>
               <Text style={styles.jobTitle}>{job.title}</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text style={styles.companyName}>{job.company}</Text>
-                <Text style={styles.dateRange}>{job.start_date} - {job.end_date || 'Present'}</Text>
+                <Text style={styles.dateRange}>
+                  {`${job.starts_at.month}/${job.starts_at.year}`} - {job.ends_at ? `${job.ends_at.month}/${job.ends_at.year}` : 'Present'}
+                </Text>
               </View>
-              <Text style={styles.bulletPoints}>{job.description}</Text>
+              <Text style={styles.bulletPoints}>{job.description }</Text>
             </View>
           ))}
         </View>
   
-        {/* Education Section */}
+        {/* Education*/}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Education</Text>
           {profile.education?.map((edu, index) => (
-            <View key={index} style={{ marginBottom: 10 }}>
+            <View key={index} style={{ marginBottom: 20 }}>
               <Text style={styles.jobTitle}>{edu.school}</Text>
-              <Text style={styles.companyName}>{edu.degree} - {edu.field_of_study}</Text>
-              <Text style={styles.dateRange}>{edu.start_date} - {edu.end_date}</Text>
+              <Text style={styles.companyName}>{edu.degree_name} - {edu.field_of_study || 'Field of study not available'}</Text>
+              <Text style={styles.dateRange}>
+                {`${edu.starts_at.month}/${edu.starts_at.year}`} - {edu.ends_at ? `${edu.ends_at.month}/${edu.ends_at.year}` : 'Present'}
+              </Text>
+              <Text style={styles.bulletPoints}>{edu.description || ''}</Text>
             </View>
           ))}
         </View>
@@ -142,6 +84,8 @@ const App = () => {
       </Page>
     </Document>
   );
+  
+  
 
   return (
     <div>
