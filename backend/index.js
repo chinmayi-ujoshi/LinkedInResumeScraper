@@ -17,7 +17,7 @@ app.use(express.json());
 const fetchBase64Image = async (url) => {
   try {
     const response = await axios.get(url, {
-      responseType: 'arraybuffer', // Fetch the image as binary data
+      responseType: 'arraybuffer', 
     });
     const buffer = Buffer.from(response.data, 'binary').toString('base64');
     return `data:${response.headers['content-type']};base64,${buffer}`;
@@ -49,12 +49,12 @@ app.get('/api/linkedin', async (req, res) => {
         profileData.profile_pic_base64 = await fetchBase64Image(profileData.profile_pic_url);
       } catch (err) {
         console.error('Failed to convert profile picture to base64:', err.message);
-        // Optionally, provide a default base64 placeholder or null
+
         profileData.profile_pic_base64 = null;
       }
     }
 
-    res.json(profileData); // Send the modified profile data back to the frontend
+    res.json(profileData);
   } catch (error) {
     console.error('Failed to fetch LinkedIn profile data:', error.message);
     res.status(500).json({ error: 'Failed to fetch LinkedIn profile data' });

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { PDFDownloadLink, Font } from '@react-pdf/renderer';
-import ResumeDocument from './components/ResumeDocument'; // Import the updated ResumeDocument component
+import ResumeDocument from './components/ResumeDocument'; 
 
 Font.register({
   family: 'Roboto',

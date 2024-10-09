@@ -1,11 +1,10 @@
-
-import { StyleSheet  } from "@react-pdf/renderer";
-
-
+import { StyleSheet } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
   page: {
-    padding: 40,
+    paddingTop: 20, 
+    paddingBottom: 40,
+    paddingHorizontal: 40,
     fontFamily: 'Times-Roman',
     fontSize: 10,
     lineHeight: 1,
@@ -14,13 +13,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 40,
-    fontSize: 12,
-    color: '#888'
+    fontSize: 10,
+    color: '#888',
+    textAlign: 'right',
   },
   headerContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 5,
+    alignItems: 'center', 
+    marginBottom: 10,
   },
   resumeTitle: {
     fontSize: 12,
@@ -30,12 +31,12 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 2, 
   },
   contactDetails: {
     fontSize: 10,
     color: '#333',
-    marginBottom: 3,
+    marginBottom: 2,
   },
   profilePicture: {
     width: 60,
@@ -44,23 +45,24 @@ const styles = StyleSheet.create({
     objectFit: 'cover',
   },
   section: {
-    marginBottom: 20,
+    marginTop: 10, 
+    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 12,
     fontWeight: 'bold',
     color: '#000',
-    marginBottom: 8,
+    marginBottom: 5, 
     textTransform: 'uppercase',
     borderBottomWidth: 1,
     borderBottomColor: '#333',
     borderBottomStyle: 'solid',
-    paddingBottom: 3,
+    paddingBottom: 2,
   },
   jobTitle: {
     fontSize: 11,
     fontWeight: 'bold',
-    marginBottom: 3,
+    marginBottom: 2,
   },
   companyName: {
     fontSize: 10,
